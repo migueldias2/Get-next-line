@@ -25,6 +25,8 @@ char	*get_until_nl(int fd, char *str)
 		if (!str)
 			return (NULL);
 	}
+	if (chars_read == 0)
+		return (NULL);
 	return (str);
 }
 
