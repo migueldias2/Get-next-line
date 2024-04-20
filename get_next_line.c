@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: mcarepa- <mcarepa-@student.42lisboa.c      +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/04/19 18:43:00 by mcarepa-          #+#    #+#             */
-/*   Updated: 2024/04/20 00:11:18 by mcarepa-         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "get_next_line.h"
 
 char	*get_until_nl(int fd, char *str)
@@ -19,15 +7,17 @@ char	*get_until_nl(int fd, char *str)
 	int		i;
 
 	i = 0;
-	str = NULL;
 	while (i < BUFFER_SIZE + 1)
 		temp[i++] = '\0';
 	chars_read = 1;
 	while (!ft_strchr(temp, '\n') && chars_read)
 	{
+        chars_read = read(fd, temp, BUFFER_SIZE);
 		if (chars_read < 0)
-			return (NULL);
-		chars_read = read(fd, temp, BUFFER_SIZE);
+        {
+            free(str);
+            return (NULL);
+        }
 		if (!str)
 			str = ft_strdup(temp);
 		else
