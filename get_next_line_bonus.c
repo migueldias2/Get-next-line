@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mcarepa- <mcarepa-@student.42lisboa.c      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/04/19 18:43:00 by mcarepa-          #+#    #+#             */
-/*   Updated: 2024/04/23 13:54:02 by mcarepa-         ###   ########.fr       */
+/*   Created: 2024/04/23 13:02:59 by mcarepa-          #+#    #+#             */
+/*   Updated: 2024/04/23 13:23:14 by mcarepa-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 char	*get_until_nl(int fd, char *str)
 {
@@ -40,7 +40,7 @@ char	*get_until_nl(int fd, char *str)
 
 char	*get_next_line(int fd)
 {
-	static char	*string;
+	static char	*string[MAX_FD];
 	char		*final_string;
 	char		*remaining_chars;
 	int			i;
@@ -48,32 +48,46 @@ char	*get_next_line(int fd)
 	i = 0;
 	if (fd < 0 || BUFFER_SIZE < 1)
 		return (NULL);
-	string = get_until_nl(fd, string);
-	if (!string)
+	string[fd] = get_until_nl(fd, string[fd]);
+	if (!string[fd])
 		return (NULL);
-	while (string[i] != '\n' && string[i])
+	while (string[fd][i] != '\n' && string[fd][i])
 		i++;
-	if (string[i] == '\n')
+	if (string[fd][i] == '\n')
 		i++;
-	final_string = ft_substr(string, 0, i);
-	remaining_chars = ft_substr(string, i, ft_strlen(string) - i);
-	free(string);
-	string = remaining_chars;
+	final_string = ft_substr(string[fd], 0, i);
+	remaining_chars = ft_substr(string[fd], i, ft_strlen(string[fd]) - i);
+	free(string[fd]);
+	string[fd] = remaining_chars;
 	return (final_string);
 }
-/*int	main()
+/*int	main(void)
 {
-	int		fd;
+	int		fd1, fd2;
 	char	*line;
 
-	fd = open("file.txt", O_RDONLY);
-	if (fd < 0)
+	fd1 = open("file1.txt", O_RDONLY);
+	if (fd1 < 0)
 		return (1);
-	while ((line = get_next_line(fd)) != NULL)
+	fd2 = open("file2.txt", O_RDONLY);
+	if (fd2 < 0)
 	{
-		printf("Line: %s\n", line);
+		close(fd1);
+		return (1);
+	}
+	printf("Contents of file1.txt:\n");
+	while ((line = get_next_line(fd1)) != NULL)
+	{
+		printf("%s\n", line);
 		free(line);
 	}
-	close(fd);
+	close(fd1);
+	printf("\nContents of file2.txt:\n");
+	while ((line = get_next_line(fd2)) != NULL)
+	{
+		printf("%s\n", line);
+		free(line);
+	}
+	close(fd2);
 	return (0);
 }*/
