@@ -9,6 +9,7 @@ The `get_next_line` function is designed to read a line from a file descriptor, 
 ### Function Signature
 ```c
 int get_next_line(int fd, char **line);
+```c
 
 ### Parameters
 
